@@ -1,21 +1,41 @@
-class EscapeRoom {
-    private solvedPuzzles: number = 0;
-    private totalPuzzles: number;
-    private difficulty: 'easy' | 'hard';
+class Lock {
+    private correctCode: number;
+    private attemptsLeft: number;
+    private maxAttempts: number;
 
-    constructor(totalPuzzles: number, difficulty: 'easy' | 'hard') {
-        this.totalPuzzles = totalPuzzles;
-        this.difficulty = difficulty;
+    constructor(correctCode: number, maxAttempts: number = 5) {
+        this.correctCode = correctCode;
+        this.attemptsLeft = maxAttempts;
+        this.maxAttempts = maxAttempts;
     }
 
-    solvePuzzle(): void {
-        this.solvedPuzzles++;
+    checkCode(playerCode: number): string {
+        if (this.attemptsLeft === 0) {
+            this.resetLock();
+            return 'Zu viele Versuche. Das Schloss wurde zurückgesetzt.';
+        }
+
+        if (playerCode < 1000 || playerCode > 9999) {
+            return 'Ungültiger Code. Bitte gib einen vierstelligen Code ein.';
+        }
+
+        this.attemptsLeft--;
+
+        if (playerCode === this.correctCode) {
+            return 'Schloss geöffnet!';
+        } else if (this.attemptsLeft > 0) {
+            return `Falscher Code. Du hast noch ${this.attemptsLeft} Versuch(e).`;
+        } else {
+            return 'Keine Versuche mehr übrig! Das Schloss wird zurückgesetzt.';
+        }
     }
 
-    canEscape(): boolean {
-        const requiredPuzzles = this.difficulty === 'easy'
-            ? Math.ceil(this.totalPuzzles * 0.8)
-            : this.totalPuzzles;
-        return this.solvedPuzzles >= requiredPuzzles;
+    getAttemptsLeft(): number {
+        return this.attemptsLeft;
+    }
+
+    resetLock(): void {
+        this.attemptsLeft = this.maxAttempts;
     }
 }
+
