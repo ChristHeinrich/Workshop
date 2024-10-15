@@ -1,0 +1,21 @@
+class EscapeRoom {
+    private solvedPuzzles: number = 0;
+    private totalPuzzles: number;
+    private difficulty: 'easy' | 'hard';
+
+    constructor(totalPuzzles: number, difficulty: 'easy' | 'hard') {
+        this.totalPuzzles = totalPuzzles;
+        this.difficulty = difficulty;
+    }
+
+    solvePuzzle(): void {
+        this.solvedPuzzles++;
+    }
+
+    canEscape(): boolean {
+        const requiredPuzzles = this.difficulty === 'easy'
+            ? Math.ceil(this.totalPuzzles * 0.8)
+            : this.totalPuzzles;
+        return this.solvedPuzzles >= requiredPuzzles;
+    }
+}
