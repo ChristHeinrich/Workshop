@@ -1,0 +1,3 @@
+function checkPuzzleSolution(solution: string, playerInput: string): boolean {
+    return solution.toLowerCase() === playerInput.toLowerCase();
+}
