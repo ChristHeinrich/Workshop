@@ -1,0 +1,44 @@
+import { describe, test, expect } from '@jest/globals';
+
+describe('EscapeRoom', () => {
+    let escapeRoom: EscapeRoom;
+
+    beforeEach(() => {
+        const room1 = new Room([new Task('1234'), new Task('abcd')]);
+        const room2 = new Room([new Task('4321'), new Task('dcba')]);
+
+        escapeRoom = new EscapeRoom([room1, room2]);
+    });
+
+    test('Spieler löst alle Aufgaben in der richtigen Reihenfolge', () => {
+        // Erster Raum, erste Aufgabe lösen
+        expect(escapeRoom.attemptTaskInCurrentRoom(0, '1234')).toBe('Aufgabe gelöst!');
+
+        // Erster Raum, zweite Aufgabe lösen
+        expect(escapeRoom.attemptTaskInCurrentRoom(1, 'abcd')).toBe('Aufgabe gelöst! Du hast diesen Raum abgeschlossen und gehst zum nächsten!');
+
+        // Zweiter Raum, erste Aufgabe lösen
+        expect(escapeRoom.attemptTaskInCurrentRoom(0, '4321')).toBe('Aufgabe gelöst!');
+
+        // Zweiter Raum, zweite Aufgabe lösen
+        expect(escapeRoom.attemptTaskInCurrentRoom(1, 'dcba')).toBe('Aufgabe gelöst! Du hast diesen Raum abgeschlossen und gehst zum nächsten!');
+
+        // Alle Räume abgeschlossen
+        expect(escapeRoom.isEscapeComplete()).toBe(true);
+    });
+
+    test('Spieler gibt falsche Antworten ein', () => {
+        // Falsche Antwort im ersten Raum
+        expect(escapeRoom.attemptTaskInCurrentRoom(0, '0000')).toBe('Falscher Versuch. Probiere es noch einmal!');
+        expect(escapeRoom.isEscapeComplete()).toBe(false);
+
+        // Richtige Antwort danach
+        expect(escapeRoom.attemptTaskInCurrentRoom(0, '1234')).toBe('Aufgabe gelöst!');
+        expect(escapeRoom.isEscapeComplete()).toBe(false);
+    });
+
+    test('Spieler versucht eine Aufgabe außerhalb des gültigen Bereichs', () => {
+        // Ungültiger Versuch, eine Aufgabe zu lösen, die es nicht gibt
+        expect(escapeRoom.attemptTaskInCurrentRoom(2, 'abcd')).toBe('Ungültige Aufgabe.');
+    });
+});
