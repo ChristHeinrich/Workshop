@@ -1,0 +1,74 @@
+// Eine einzelne Aufgabe im Escape Room
+class Task {
+    private isSolved: boolean = false;
+
+    constructor(private solution: string) {}
+
+    solve(attempt: string): boolean {
+        if (attempt === this.solution) {
+            this.isSolved = true;
+            return true;
+        }
+        return false;
+    }
+
+    isTaskSolved(): boolean {
+        return this.isSolved;
+    }
+}
+
+// Ein Raum im Escape Room
+class Room {
+    private tasks: Task[];
+
+    constructor(tasks: Task[]) {
+        this.tasks = tasks;
+    }
+
+    attemptSolve(taskIndex: number, attempt: string): string {
+        if (taskIndex < 0 || taskIndex >= this.tasks.length) {
+            return "Ungültige Aufgabe.";
+        }
+
+        const task = this.tasks[taskIndex];
+        if (task.solve(attempt)) {
+            return "Aufgabe gelöst!";
+        } else {
+            return "Falscher Versuch. Probiere es noch einmal!";
+        }
+    }
+
+    areAllTasksSolved(): boolean {
+        return this.tasks.every(task => task.isTaskSolved());
+    }
+}
+
+// Escape Room mit mehreren Räumen
+class EscapeRoom {
+    private rooms: Room[];
+    private currentRoomIndex: number = 0;
+
+    constructor(rooms: Room[]) {
+        this.rooms = rooms;
+    }
+
+    attemptTaskInCurrentRoom(taskIndex: number, attempt: string): string {
+        if (this.currentRoomIndex >= this.rooms.length) {
+            return "Du hast alle Räume abgeschlossen!";
+        }
+
+        const currentRoom = this.rooms[this.currentRoomIndex];
+        const result = currentRoom.attemptSolve(taskIndex, attempt);
+
+        if (currentRoom.areAllTasksSolved()) {
+            this.currentRoomIndex++;
+            return result + " Du hast diesen Raum abgeschlossen und gehst zum nächsten!";
+        }
+
+        return result;
+    }
+
+    isEscapeComplete(): boolean {
+        return this.currentRoomIndex >= this.rooms.length;
+    }
+}
